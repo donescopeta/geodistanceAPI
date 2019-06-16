@@ -1,9 +1,16 @@
-from sqlalchemy import create_engine
-class Location(Base):
-     __tablename__ = 'Locations'
+from flask_sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
 
-     id = Column(Integer, primary_key=True)
-     name = Column(String)
-     latitude = Column(Integer)
-     longitude = Column(Integer)
+class Location(db.Model):
+     id = db.Column(db.Integer, primary_key=True)
+     name = db.Column(db.String)
+     latitude = db.Column(db.Float)
+     longitude = db.Column(db.Float)
+     elevation = db.Column(db.Float)
 
+class User(db.Model):
+     id = db.Column(db.Integer, primary_key=True)
+     name = db.Column(db.String)
+     latitude = db.Column(db.Float)
+     longitude = db.Column(db.Float)
+     hash = db.Column(db.String)
