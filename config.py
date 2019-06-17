@@ -1,10 +1,12 @@
 class Config:
-	SQLALCHEMY_DATABASE_URI = "sqlite:////tmp/test.db"
+	SQLALCHEMY_DATABASE_URI = "sqlite:///./test.db"
+	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+	SQLALCHEMY_TRACK_MODIFICATIONS = True
 	DEBUG = False
 	CSRF_ENABLED = True
+	ECRET_KEY = 'secret key'
 
 class Development(Config):
-	SQLALCHEMY_DATABASE_URI = "sqlite:////tmp/test.db"
 	DEBUG = True
 
 class Production(Config):

@@ -4,10 +4,11 @@ KEY = "n5iQbj-L4V-LfiZb4aZfuodM5fD5fA"
 
 def fetch_elevaion(points):
 	r = requests.get(
-      	API,
+      	url=API,
 		params = {
-			"points": str( tuple( [ tuple(p) for p in points ] ) ),
+			"points": ",".join( [ "({0},{1})".format(*x) for x in points ] ),
 			"key": KEY
 		}
 	)
-	return tuple([ x["elevation"] for x  in r ])
+	data = tuple([ x["elevation"] for x in r.json()["elevations"] ])
+	return data
