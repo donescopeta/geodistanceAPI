@@ -1,9 +1,13 @@
-from app import create_app
+from app import create_app, db
 import os
+import sys
 
-try:
-	config = os.getenv('APP_SETTINGS') 
-except:
+def initialize_db():
+    with app.app_context():
+        db.create_all()
+
+config = os.getenv('APP_SETTINGS') 
+if not config:
 	config = "development" 
 app = create_app(config)
 
