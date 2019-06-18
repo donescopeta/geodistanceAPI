@@ -30,7 +30,15 @@ python run.sh
 ```
 
 ## Running Tests
+virtualenv geodistanceapi # if you you use virtualenv
 ```
- virtualenv geodistanceapi # if you you use virtualenv
  python -m pytest tests/
+```
+## Usage
+
+### Adding the new locations
+You can add a new location to a database using a PUT request to /location/<location_name>
+```
+curl -X PUT -d 'latitude=51.228231&longitude=22.581397' http://localhost:5000/location/Lublin
+curl -X PUT -d 'latitude=52.237464&longitude=21.013131' http://localhost:5000/location/Warsaw
 ```
