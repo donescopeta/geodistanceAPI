@@ -6,7 +6,7 @@ def initialize_db():
     with app.app_context():
         db.create_all()
 
-config = os.getenv('APP_SETTINGS') 
+config = os.getenv('GEOAPI_SETTINGS') 
 if not config:
 	config = "development" 
 app = create_app(config)

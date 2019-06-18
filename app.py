@@ -1,95 +1,115 @@
 #!flask/bin/python
 from flask import Flask, jsonify, request
-from model import db, Location, User 
 from flask_sqlalchemy import SQLAlchemy
+from model import db, Location, User 
 from elevation import fetch_elevaion
 from geopy import distance
 
 from config import app_config
 
-
-get_distances_form_query = lambda rows, location, dist = distance.distance: \
-	tuple(map( dist, \
-		map(lambda x: (
-			x.latitude,\
-			x.longitude,\
-			*location
-		), rows) \
-	))
+get_distances_form_query = lambda rows, location, dist = lambda x: distance.vincenty(*x).meters: \
+    tuple(map( dist, \
+        map(lambda x: (
+            (x.latitude, x.longitude),
+            location
+        ), rows) \
+    ))
 
 def create_app(config_name):
-	app = Flask(__name__)
-	app.config.from_object(app_config[config_name])
-	
-	db.init_app(app)
+    app = Flask(__name__)
+    app.config.from_object(app_config[config_name])
+    
+    db.init_app(app)
 
-	@app.route('/location/<name>', methods=["PUT","GET"])
-	def location_request(name):
-		print (request.form)
-		if request.method == 'PUT':
-			lat = request.form["latitude"]
-			lon = request.form["longitude"]
+    @app.route('/location/<name>', methods=["PUT","GET"])
+    def location_request(name):
+        """Function that handles appending or fetching a location."""
+        print (request.form)
+        if request.method == 'PUT':
+            try:
+                lat = float(request.form["latitude"])
+                lon = float(request.form["longitude"])
+            except: return "", 400 # <- Bad request
 
-			db.session.add(Location(
-				name = name,
-				latitude = lat,
-				longitude = lon,
-				elevation  = fetch_elevaion( ( (lat, lon),) )[0],
-			))
+            db.session.add(Location(
+                name = name,
+                latitude = lat,
+                longitude = lon,
+                elevation  = fetch_elevaion( ( (lat, lon),) )[0],
+            ))
 
-			db.session.commit()
-			return jsonify(  { "message" : "success" } )
+            db.session.commit()
+            return jsonify({ "message" : "success" }), 201
 
-		if request.method == 'GET':
-			r = db.Location.query().filter_by(name = name)
-			return jsonify(r)
+        if request.method == 'GET':
+            d = db.session.query(Location).filter_by(name = name).first()
+            if not d :
+                return '{}', 204
+            return jsonify({
+                "name": d.name,
+                "latitude": d.latitude,
+                "longitude": d.longitude,
+                "elevation": d.elevation, 
+            }), 200
 
-	@app.route('/closest', methods=["GET"])
-	@app.route('/user/<user>/closest', methods=["GET"])
-	def closest(user = None):
-		lat = request.args.get("latitude")
-		lon = request.args.get("longitude")
-		r =  db.session.query(Location).all()
+    @app.route('/closest', methods=["GET"])
+    @app.route('/user/<user>/closest', methods=["GET"])
+    def closest_request(user = None):
+        """ This function processees request for the closest location avaiable."""
+        try:
+            lat = float(request.args.get("latitude"))
+            lon = float(request.args.get("longitude"))
+        except: return "{}", 400 # <- Bad request
+            
+        r =  db.session.query(Location).all()
 
-		distances = get_distances_form_query(r,(lat,lon))
+        distances = get_distances_form_query(r,(lat,lon))
 
-		if not distances:
-			return jsonify( {"closest": {}, }) 
-		min_d = sorted(distances)[0]
-		d = r[distances.index(min_d)]
+        if not distances:
+            return jsonify( {"closest": {}, }), 204
 
-		return jsonify({"closest": {
-			"name": d["name"],
-			"latitude": d["latitude"],
-			"longitude": d["longitude"],
-			"elevation": d["elevation"], 
-		}})
+        # looking for minimal distance
+        min_d = sorted(distances)[0]
+        d = r[distances.index(min_d)]
 
-
-	@app.route('/indistance', methods=["GET"])
-	@app.route('/user/<user>/indistance', methods=["GET"])
-	def indistance(user = None):
-		r = db.session.query(Location).all()
-		lat = request.args.get("latitude")
-		lon = request.args.get("longitude")
-		radius = request.args.get("radius")
+        return jsonify({"closest": {
+            "name": d.name,
+            "latitude": d.latitude,
+            "longitude": d.longitude,
+            "elevation": d.elevation, 
+            "distance": min_d
+        }}), 200
 
 
-		distances = get_distances_form_query(r, (lat,lon))
-		f = sorted( filter( lambda x: x < radius, distances) )
-		resp = []
+    @app.route('/indistanceof', methods=["GET"])
+    @app.route('/user/<user>/indistanceof', methods=["GET"])
+    def indistanceof_request(user = None):
+        """ This function processes the request for a list of
+            locations in a certain radius from a given position
+        """
 
-		for x, n in zip(sorted(f), range(len(f))):
-			d = r[distances.index(x)]
-			resp.append({
-				"name": d["name"],
-				"latitude": d["latitude"],
-				"longitude": d["longitude"],
-				"elevation": d["elevation"], 
-				"distance": x,
-				"order": n
-			})
+        try:
+            lat = float(request.args.get("latitude"))
+            lon = float(request.args.get("longitude"))
+            radius = float(request.args.get("radius"))
+        except: return "", 400 # <- Bad request
+            
+        r = db.session.query(Location).all()
+        distances = get_distances_form_query(r, (lat,lon))
+        f = sorted( filter( lambda x: x and x < radius, distances) )
+        resp = []
 
-		return jsonify({"indistance": resp, "radius": radius})
-	
-	return app
+        for x, n in zip(sorted(f), range(len(f))):
+            d = r[distances.index(x)]
+            resp.append({
+                "name": d.name,
+                "latitude": d.latitude,
+                "longitude": d.longitude,
+                "elevation": d.elevation, 
+                "distance": x,
+                "order": n
+            })
+
+        return jsonify({"indistance": resp, "radius": radius}), 200
+    
+    return app

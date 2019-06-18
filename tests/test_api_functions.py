@@ -26,7 +26,7 @@ def client(app):
 @pytest.mark.incremental
 class TestFlaskAPI(object):
 
-    def test_inserting_loaction_into_database(self, client):
+    def test_inserting_location_into_a_database(self, client):
 
         for latitude, longitude, name in locations:
             res = client.put('/location/%s' % name, data = { 
@@ -57,7 +57,7 @@ class TestFlaskAPI(object):
             assert res is not None
             assert res["closest"]["name"] == closest
 
-    def test_finding_locations_in_given_distance(self, client):
+    def test_finding_locations_in_a_given_distance(self, client):
         
         #Krasnystaw, 60 km radius, should result Lublin.     
         res = client.get('indistanceof', query_string = {
