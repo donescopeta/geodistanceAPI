@@ -30,18 +30,27 @@ python run.sh
 ```
 
 ## Running Tests
-virtualenv geodistanceapi # if you you use virtualenv
 ```
- python -m pytest tests/
+# if you you use virtualenv
+virtualenv geodistanceapi 
+python -m pytest tests/
 ```
 ## Usage.
 
 ### Adding new locations.
-You can add a new location to a database using a PUT request to ```/location/<location_name>```
+You can add a new location to a database using a PUT method to ```/location/<location_name>```
 ```
 curl -X PUT -d 'latitude=51.228231&longitude=22.581397' http://localhost:5000/location/Lublin
 curl -X PUT -d 'latitude=52.237464&longitude=21.013131' http://localhost:5000/location/Warsaw
 ```
+#### Details:
+* URL: ```/location/:name```
+* Method: PUT
+* Data params: latitude, longitude
+* Requied: latitude=[float] , longitude=[float]
+* Success Response: 201
+* Error Response: 400
+
 ### Fetching an existing location.
 ```
 curl -X GET http://localhost:5000/location/Lublin
@@ -49,18 +58,23 @@ curl -X GET http://localhost:5000/location/Lublin
 API response 
 ```
 {
-  "elevation": 180,{
   "elevation": 180,
   "latitude": 51.228231,
   "longitude": 22.581397,
   "name": "Lublin"
 }
+
 ```
+#### Details:
+* URL: ```/location/:name```
+* Method: GET
+* Success Response: 201, 204
+
 ### Requesting the closest location to a given position.
 ```
 curl -X GET 'http://localhost:5000/closest?latitude=53.228231&longitude=27.581397'
 ```
-API responce 
+API response 
 ```
 {
   "closest": {
@@ -71,14 +85,23 @@ API responce
     "name": "Lublin"
   }
 }
+
 ```
+#### Details:
+* URL: ```/location/closest```
+* Method: PUT
+* URL Params: latitude, longitude
+* Requied: latitude=[float] , longitude=[float]
+* Success Response: 200, 204
+* Error Response: 400
+
 ### Requesting all locations in a given distance from the position.
 ```
 curl -X GET 'http://localhost:5000/indistanceof?radius=3000000&latitude=53.228231&longitude=27.581397'
 ```
 Radius attribute must contain a distance in meters.
 
- API Responce
+ API response
  ```
 {
   "indistance": [
@@ -102,3 +125,11 @@ Radius attribute must contain a distance in meters.
   "radius": 3000000
 }
  ```
+
+#### Details:
+* URL: ```/location/indistance```
+* Method: PUT
+* URL Params: latitude, longitude, radius
+* Requied: latitude=[float] , longitude=[float], raadius=[float] ,
+* Success Response: 200
+* Error Response: 400
