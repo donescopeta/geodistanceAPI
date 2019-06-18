@@ -3,7 +3,8 @@ Flask-RESTful API for geographical distance calculation.
 
 The API let's is inserting a geographical position into a database along with their names.  Computing distances to these locations.  Finding the closest location form a given position.
 
-Quickstart.
+
+## Quickstart.
 To run the api, create the environment and install nessesry packages.
 ```
 virtualenv geodistanceapi
