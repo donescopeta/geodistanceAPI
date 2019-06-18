@@ -28,3 +28,9 @@ Finally you can ran the API
 ```
 python run.sh
 ```
+
+##Running Tests
+```
+ virtualenv geodistanceapi # if you you use virtualenv
+ python -m pytest tests/
+```
