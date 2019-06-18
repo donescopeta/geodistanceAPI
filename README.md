@@ -130,6 +130,6 @@ Radius attribute must contain a distance in meters.
 * URL: ```/location/indistance```
 * Method: PUT
 * URL Params: latitude, longitude, radius
-* Requied: latitude=[float] , longitude=[float], raadius=[float] ,
+* Requied: latitude=[float] , longitude=[float], radius=[float] ,
 * Success Response: 200
 * Error Response: 400
