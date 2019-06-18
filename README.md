@@ -89,7 +89,7 @@ API response
 ```
 #### Details:
 * URL: ```/location/closest```
-* Method: PUT
+* Method: GET
 * URL Params: latitude, longitude
 * Requied: latitude=[float] , longitude=[float]
 * Success Response: 200, 204
@@ -128,7 +128,7 @@ Radius attribute must contain a distance in meters.
 
 #### Details:
 * URL: ```/location/indistance```
-* Method: PUT
+* Method: GET
 * URL Params: latitude, longitude, radius
 * Requied: latitude=[float] , longitude=[float], radius=[float] ,
 * Success Response: 200
