@@ -47,7 +47,7 @@ curl -X PUT -d 'latitude=52.237464&longitude=21.013131' http://localhost:5000/lo
 * URL: ```/location/:name```
 * Method: PUT
 * Data params: latitude, longitude
-* Requied: latitude=[float] , longitude=[float]
+* Required: latitude=[float] , longitude=[float]
 * Success Response: 201
 * Error Response: 400
 
@@ -91,7 +91,7 @@ API response
 * URL: ```/location/closest```
 * Method: GET
 * URL Params: latitude, longitude
-* Requied: latitude=[float] , longitude=[float]
+* Required: latitude=[float] , longitude=[float]
 * Success Response: 200, 204
 * Error Response: 400
 
@@ -130,6 +130,6 @@ Radius attribute must contain a distance in meters.
 * URL: ```/location/indistance```
 * Method: GET
 * URL Params: latitude, longitude, radius
-* Requied: latitude=[float] , longitude=[float], radius=[float] ,
+* Required: latitude=[float] , longitude=[float], radius=[float] ,
 * Success Response: 200
 * Error Response: 400
