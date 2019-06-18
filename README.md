@@ -26,7 +26,7 @@ export ELEVATION_API_IO_KEY="<YOUR_KEY>"
 ```
 Finally, you can run the API.
 ```
-python run.sh
+python run.py
 ```
 
 ## Running Tests
