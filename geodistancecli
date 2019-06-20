@@ -1,0 +1,29 @@
+#!/bin/bash
+while true ; do 
+    [ "$1" == "add" ] && {
+        curl -X PUT -d "latitude=${3}&longitude=${4}" "http://localhost:5000/location/${2}"
+        break
+    } 
+
+    [ "$1" == "get" ] && {
+        curl -X GET "http://localhost:5000/location/${2}"
+        break
+    }
+
+    [ "$1" == "closest" ] && {
+        curl -X GET "http://localhost:5000/closest?latitude=${2}&longitude=${3}"
+        break
+    }
+
+    [ "$1" == "indistance" ] && {
+        curl -X GET "http://localhost:5000/indistanceof?radius=${2}&latitude=${3}&longitude=${4}"
+        break
+    }
+    cat <<EOF
+add [name, latitude, longitude] - add new location
+get [name] -  get an information about existing location
+closest [latitude, longitude] - find the closest location to a given position
+indistanceof [radius,latitude, longitude] - request all locations in a given radius from the position
+EOF
+   break
+done
