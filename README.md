@@ -43,6 +43,11 @@ You can add a new location to a database using a PUT method to ```/location/<loc
 curl -X PUT -d 'latitude=51.228231&longitude=22.581397' http://localhost:5000/location/Lublin
 curl -X PUT -d 'latitude=52.237464&longitude=21.013131' http://localhost:5000/location/Warsaw
 ```
+or
+```
+./geodistancecli add Lublin 51.228231 22.581397
+./geodistancecli add Warsaw 52.237464 21.013131
+```
 #### Details:
 * URL: ```/location/:name```
 * Method: PUT
@@ -54,6 +59,10 @@ curl -X PUT -d 'latitude=52.237464&longitude=21.013131' http://localhost:5000/lo
 ### Fetching an existing location.
 ```
 curl -X GET http://localhost:5000/location/Lublin
+```
+or
+```
+./geodistancecli get Lublin
 ```
 API response 
 ```
@@ -73,6 +82,11 @@ API response
 ### Requesting the closest location to a given position.
 ```
 curl -X GET 'http://localhost:5000/closest?latitude=53.228231&longitude=27.581397'
+```
+
+or
+```
+./geodistancecli closest 53.228231 27.581397
 ```
 API response 
 ```
@@ -99,6 +113,12 @@ API response
 ```
 curl -X GET 'http://localhost:5000/indistanceof?radius=3000000&latitude=53.228231&longitude=27.581397'
 ```
+or
+
+```
+./geodistancecli indistance 3000000 53.228231 27.581397
+```
+
 Radius attribute must contain a distance in meters.
 
  API response
